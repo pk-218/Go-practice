@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/gorilla/mux" // pseudo server 'mux' by gorilla
 )
 
 // Book Struct
@@ -25,8 +25,11 @@ type Author struct {
 	LastName  string `json:"lastname"`
 }
 
+// map for books
 var books []Book
 
+// CRUD API
+// Functions to handle API calls
 func getBooks(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(books)
 }
@@ -82,17 +85,10 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	var kilos int = 0
-	fmt.Scan(&kilos)
-	if kilos > 2 && kilos%2 == 0 {
-		fmt.Println("YES")
-	} else {
-		fmt.Println("NO")
-	}
-
 	fmt.Println("Just a check")
 	r := mux.NewRouter()
 
+	// dummy data
 	books = append(books, Book{ID: "1", ISBN: "12345678", Title: "Book One", Author: &Author{FirstName: "John", LastName: "Doe"}})
 	books = append(books, Book{ID: "2", ISBN: "12345679", Title: "Book Two", Author: &Author{FirstName: "Jane", LastName: "Doe"}})
 
@@ -102,6 +98,7 @@ func main() {
 	r.HandleFunc("/api/books/{id}", updateBook).Methods("PUT")
 	r.HandleFunc("/api/books/{id}", deleteBook).Methods("DELETE")
 
+	// servers at localhost with port as 8000
 	log.Fatal(http.ListenAndServe(":8000", r))
 
 }
