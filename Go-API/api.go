@@ -25,7 +25,7 @@ type Author struct {
 	LastName  string `json:"lastname"`
 }
 
-// map for books
+// slice of type Book
 var books []Book
 
 // CRUD API
@@ -49,7 +49,7 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 func createBook(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	var book Book
-	_ = json.NewDecoder(r.Body).Decode(&book)
+	json.NewDecoder(r.Body).Decode(&book)
 	book.ID = strconv.Itoa(rand.Intn(100000000)) // Mock ID - not safe
 	books = append(books, book)
 	json.NewEncoder(w).Encode(book)
@@ -62,7 +62,7 @@ func updateBook(w http.ResponseWriter, r *http.Request) {
 		if item.ID == params["id"] {
 			books = append(books[:index], books[index+1:]...)
 			var book Book
-			_ = json.NewDecoder(r.Body).Decode(&book)
+			json.NewDecoder(r.Body).Decode(&book)
 			book.ID = params["id"]
 			books = append(books, book)
 			json.NewEncoder(w).Encode(book)
@@ -98,7 +98,7 @@ func main() {
 	r.HandleFunc("/api/books/{id}", updateBook).Methods("PUT")
 	r.HandleFunc("/api/books/{id}", deleteBook).Methods("DELETE")
 
-	// servers at localhost with port as 8000
+	// serves at local host with port as 8000
 	log.Fatal(http.ListenAndServe(":8000", r))
 
 }

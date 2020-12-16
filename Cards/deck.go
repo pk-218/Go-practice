@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"strings"
+	"time"
 )
 
 // creating a new type of deck which stores types of cards as strings
@@ -47,6 +49,7 @@ func (d deck) saveToFile(filename string) error {
 	return ioutil.WriteFile(filename, []byte(d.toString()), 0600)
 }
 
+// read comma separated file to get new deck
 func newDeckFromFile(filename string) deck {
 	bs, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -55,4 +58,14 @@ func newDeckFromFile(filename string) deck {
 	}
 	s := strings.Split(string(bs), ",")
 	return deck(s)
+}
+
+// receiver function to shuffle a deck
+func (d deck) shuffle() {
+	// creating a random number generator according to the current time so that
+	// every time the program is run, a purely random number is generator
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(d), func(i int, j int) {
+		d[i], d[j] = d[j], d[i] // syntax for swapping d[i] and d[j]
+	})
 }
